@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  # ── Main CLI tool ──────────────────────────────────────────────────────────
+  aicodereviewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: aicodereviewer:latest
+    container_name: aicodereviewer
+    env_file: .env
+    volumes:
+      # Mount the target repo for review
+      - ./:/workspace
+      # Persist ChromaDB data
+      - chroma_data:/workspace/.chroma_db
+      # Persist disk cache
+      - cache_data:/workspace/.cache
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+  # ── ChromaDB standalone (optional — app also uses embedded mode) ───────────
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - CHROMA_SERVER_AUTH_PROVIDER=none
+      - ANONYMIZED_TELEMETRY=false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ── Ollama local LLM server (optional) ────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    # Uncomment if you have a GPU:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  chroma_data:
+  cache_data:
+  ollama_models:
