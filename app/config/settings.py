@@ -21,6 +21,7 @@ class ModelProvider(str, Enum):
 
     OPENAI = "openai"
     OLLAMA = "ollama"
+    MOCK = "mock"
 
 
 class Settings(BaseSettings):

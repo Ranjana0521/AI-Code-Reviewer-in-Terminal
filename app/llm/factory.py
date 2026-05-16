@@ -35,6 +35,10 @@ def get_llm_provider() -> BaseLLMProvider:
         from app.llm.ollama_provider import OllamaProvider
         return OllamaProvider()
 
+    if settings.model_provider == ModelProvider.MOCK:
+        from app.llm.mock_provider import MockProvider
+        return MockProvider()
+
     raise ValueError(
         f"Unsupported MODEL_PROVIDER '{settings.model_provider}'. "
         "Choose 'openai' or 'ollama'."
