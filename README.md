@@ -412,23 +412,6 @@ pytest tests/test_agents.py -v
 
 ---
 
-## 🤝 Contributing
-
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Make changes and add tests
-4. Run `pytest` and `ruff check .`
-5. Commit using `aicodereviewer commitmsg` 😄
-6. Open a Pull Request
-
----
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
----
-
 <div align="center">
 Built with ❤️ using Python · Typer · Rich · OpenAI · LangGraph · ChromaDB
 </div>
